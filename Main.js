@@ -582,31 +582,33 @@ function insertDatabaseInline() {
 }
 
 /* ==========================================================
-   PASO 7 — Drag & Drop  (FIXED)
+   PASO 7 — Drag & Drop  (FIXED v2: Pointer Events)
+   El Drag&Drop nativo de HTML5 (dragstart/dragover/drop) tenía dos bugs
+   reales: (1) nunca llamaba a e.dataTransfer.setData(), lo que hace que
+   Firefox cancele el drag silenciosamente, y (2) no funciona en pantallas
+   táctiles porque está basado solo en eventos de mouse. Pointer Events
+   resuelve ambos: el mismo código funciona igual con mouse, trackpad y dedo.
    ========================================================== */
 function step7_DragDrop() {
   killActive();
 
   const container = document.getElementById('blocksContainer');
 
-  // Envolver bloques con handle
+  // Envolver cada bloque con un handle de arrastre.
+  // FIX: movemos el nodo real (b.before + row.appendChild(b)) en vez de
+  // clonarlo — clonar perdía estilos inline (ej. el gradiente de los
+  // bloques multimedia) porque esos vivían en el propio nodo, no en hijos.
   Array.from(container.children).forEach(b => {
-    if (b.querySelector && b.querySelector('.drag-handle')) return;
+    if (b.classList && b.classList.contains('block-row')) return;
     const row = document.createElement('div');
     row.className = 'block-row drop-zone';
-    // FIX: draggable en el row pero el drag sólo inicia desde el handle
-    row.draggable = false; // se activa sólo desde el handle
     const handle = document.createElement('span');
     handle.className = 'drag-handle';
     handle.title = 'Arrastra este bloque';
     handle.innerHTML = '⠿';
-    // FIX: el handle inicia el drag programáticamente
-    handle.addEventListener('mousedown', () => { row.draggable = true; });
-    handle.addEventListener('mouseup',   () => { row.draggable = false; });
-    const clone = b.cloneNode(true);
+    b.before(row);
     row.appendChild(handle);
-    row.appendChild(clone);
-    b.replaceWith(row);
+    row.appendChild(b);
   });
 
   showMascot(
@@ -614,50 +616,80 @@ function step7_DragDrop() {
     'mascot'
   );
 
-  let dragSrc = null;
+  activeController = new AbortController();
+  const sig = activeController.signal;
+
+  let dragRow = null;
   let dropped = false;
 
-  // FIX: usar delegación en el container para capturar todos los eventos,
-  // incluidos los de bloques añadidos dinámicamente
-  container.addEventListener('dragstart', e => {
-    const zone = e.target.closest('.drop-zone');
-    if (!zone) return;
-    dragSrc = zone;
-    zone.classList.add('dragging');
-  });
+  // Devuelve el drop-zone justo debajo del punto Y dado (para insertar antes de él)
+  function rowAfterPoint(y) {
+    const rows = Array.from(container.querySelectorAll('.drop-zone:not(.dragging)'));
+    let closest = null;
+    let closestOffset = -Infinity;
+    rows.forEach(r => {
+      const box = r.getBoundingClientRect();
+      const offset = y - (box.top + box.height / 2);
+      if (offset < 0 && offset > closestOffset) {
+        closestOffset = offset;
+        closest = r;
+      }
+    });
+    return closest;
+  }
 
-  container.addEventListener('dragend', e => {
-    const zone = e.target.closest('.drop-zone');
-    if (zone) { zone.classList.remove('dragging'); zone.draggable = false; }
+  function clearOver() {
     container.querySelectorAll('.drop-zone.over').forEach(z => z.classList.remove('over'));
-  });
+  }
 
-  container.addEventListener('dragover', e => {
-    e.preventDefault();
-    const zone = e.target.closest('.drop-zone');
-    if (zone && zone !== dragSrc) zone.classList.add('over');
-  });
+  function finishStep() {
+    killActive();
+    hideMascot('mascot');
+    setTimeout(() => step8_Portada(), 300);
+  }
 
-  container.addEventListener('dragleave', e => {
-    const zone = e.target.closest('.drop-zone');
-    // Solo quitar .over si el mouse realmente salió del zone (no de un hijo)
-    if (zone && !zone.contains(e.relatedTarget)) zone.classList.remove('over');
-  });
+  function endDrag(e) {
+    if (!dragRow) return;
+    const after = rowAfterPoint(e.clientY);
+    clearOver();
 
-  container.addEventListener('drop', e => {
-    e.preventDefault();
-    const zone = e.target.closest('.drop-zone');
-    if (!zone) return;
-    zone.classList.remove('over');
-    if (dragSrc && dragSrc !== zone && !dropped) {
+    if (after && after !== dragRow) {
+      container.insertBefore(dragRow, after);
       dropped = true;
-      container.insertBefore(dragSrc, zone);
-      dragSrc.classList.remove('dragging');
-      dragSrc.draggable = false;
-      hideMascot('mascot');
-      setTimeout(() => step8_Portada(), 300);
+    } else if (!after) {
+      const rows = Array.from(container.querySelectorAll('.drop-zone'));
+      if (rows[rows.length - 1] !== dragRow) {
+        container.appendChild(dragRow);
+        dropped = true;
+      }
     }
+
+    dragRow.classList.remove('dragging');
+    dragRow = null;
+
+    if (dropped) finishStep();
+  }
+
+  container.querySelectorAll('.drag-handle').forEach(handle => {
+    handle.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      dragRow = handle.closest('.drop-zone');
+      if (!dragRow) return;
+      dragRow.classList.add('dragging');
+      try { handle.setPointerCapture(e.pointerId); } catch (err) { /* no-op */ }
+    }, { signal: sig });
   });
+
+  document.addEventListener('pointermove', (e) => {
+    if (!dragRow) return;
+    clearOver();
+    const rows = Array.from(container.querySelectorAll('.drop-zone:not(.dragging)'));
+    const target = rowAfterPoint(e.clientY) || rows[rows.length - 1];
+    if (target) target.classList.add('over');
+  }, { signal: sig });
+
+  document.addEventListener('pointerup', endDrag, { signal: sig });
+  document.addEventListener('pointercancel', endDrag, { signal: sig });
 }
 
 /* ==========================================================
