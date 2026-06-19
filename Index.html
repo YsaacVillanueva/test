@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notion Onboarding — The Mascot</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ================= FASE 0: REGISTRO ================= -->
+  <div id="fase0">
+
+    <!-- Pantalla 0.1: Login Principal -->
+    <div class="f0-screen active" id="f0_1">
+      <div class="f0-box">
+        <div class="f0-notion-icon">N</div>
+        <h1>Bienvenido a Notion</h1>
+        <input class="f0-input" id="f0Email" placeholder="Escribe tu dirección de email...">
+        <button class="f0-primary-btn" id="f0Continue1">Continuar</button>
+        <div class="f0-divider">O continúa con</div>
+        <div class="f0-sso-row">
+          <button class="f0-sso-btn">Google</button>
+          <button class="f0-sso-btn">Apple</button>
+          <button class="f0-sso-btn">Microsoft</button>
+          <button class="f0-sso-btn">Passkey</button>
+          <button class="f0-sso-btn">SSO</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pantalla 0.2: Registro con Email de Trabajo -->
+    <div class="f0-screen" id="f0_2">
+      <div class="f0-overlay">
+        <div class="f0-modal">
+          <div class="f0-notion-icon" style="width:28px;height:28px;font-size:14px;">N</div>
+          <h2>Bienvenido a Notion</h2>
+          <div class="sub">Regístrate con tu email de trabajo</div>
+          <input class="f0-input" placeholder="nombre@empresa.com">
+          <div class="f0-banner">Usaremos este correo para conectar tu espacio de trabajo con tu equipo.</div>
+          <button class="f0-primary-btn" id="f0Continue2">Continuar</button>
+          <div class="f0-divider">O continúa con</div>
+          <div class="f0-sso-row">
+            <button class="f0-sso-btn">Google</button>
+            <button class="f0-sso-btn">Microsoft</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pantalla 0.3: Personalización de Perfil -->
+    <div class="f0-screen" id="f0_3">
+      <div class="f0-box">
+        <div class="f0-avatar">📷</div>
+        <h1 style="font-size:22px;">Personaliza tu perfil</h1>
+        <div class="sub" style="font-size:13px;color:#787774;margin-bottom:18px;">Así te verán en Notion</div>
+        <input class="f0-input" placeholder="Tu nombre">
+        <div class="f0-dropdown">🌐 Español (Latinoamérica)</div>
+        <div class="f0-checkbox-row">
+          <input type="checkbox" checked>
+          Acepto recibir comunicaciones de producto y novedades de Notion.
+        </div>
+        <button class="f0-primary-btn" id="f0Continue3">Continuar →</button>
+      </div>
+    </div>
+
+    <!-- Pantalla 0.4: Selección de Caso de Uso -->
+    <div class="f0-screen" id="f0_4">
+      <div class="f0-box">
+        <div class="f0-duck">🐤</div>
+        <div class="f0-steps-dots"><span class="active"></span><span></span></div>
+        <h1 style="font-size:22px;">¿Cómo quieres usar Notion?</h1>
+        <div class="f0-usecase-grid">
+          <div class="f0-usecase-card" data-seg="work"><span class="emoji">💼</span> Uso profesional</div>
+          <div class="f0-usecase-card" data-seg="personal"><span class="emoji">🏠</span> Para uso personal</div>
+          <div class="f0-usecase-card" data-seg="student"><span class="emoji">📚</span> Para uso educativo</div>
+        </div>
+        <button class="f0-primary-btn" id="f0Continue4" disabled>Continuar →</button>
+      </div>
+    </div>
+
+  </div><!-- /fase0 -->
+
+  <!-- ================= SIDEBAR ================= -->
+  <div class="sidebar" id="sidebar">
+    <h3>Camila's Notion</h3>
+    <div class="sb-quickrow">
+      <span data-action="home">🏠</span><span data-action="chat">💬</span><span data-action="edit">📝</span><span data-action="inbox">📥</span><span data-action="search">🔍</span>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">Reuniones</div>
+      <div class="sb-item muted">No hay eventos próximos</div>
+      <div class="sb-item muted">Nueva nota del Anotador con IA</div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">Recientes</div>
+      <div class="sb-item" id="sbRecentNewPage">📄 Nueva página</div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">Privado</div>
+      <div class="sb-item" id="sbNewPageBtn">📄 Nueva página</div>
+      <div id="addedItemsContainer"></div>
+      <div class="sb-item muted" id="addPageBtn">+ Agregar página</div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">Apps de Notion</div>
+      <div class="sb-item" data-action="mail">✉️ Notion Mail</div>
+      <div class="sb-item" data-action="calendar">📅 Notion Calendar</div>
+      <div class="sb-item" data-action="desktop-app">🖥️ Notion para escritorio</div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">Utilidades</div>
+      <div class="sb-item" data-action="library">📚 Biblioteca</div>
+      <div class="sb-item" data-action="tasks">✅ Mis tareas</div>
+      <div class="sb-item highlight" id="goMarketplace">🛒 Notion Marketplace</div>
+      <div class="sb-item" data-action="help">❓ Ayuda</div>
+      <div class="sb-item" data-action="trash">🗑️ Papelera</div>
+    </div>
+
+    <div class="sb-footer">
+      <button class="pill-btn" data-action="new-chat">💬 Nuevo chat ⌘O</button>
+    </div>
+  </div>
+
+  <!-- ================= MAIN PANEL ================= -->
+  <div class="main-panel" id="mainPanel">
+
+    <!-- Progress Widget -->
+    <div class="progress-widget" id="progressWidget">
+      <span class="progress-label" id="progressLabel">Paso 1 de 4</span>
+      <div class="progress-track">
+        <div class="progress-seg" id="seg1"></div>
+        <div class="progress-seg" id="seg2"></div>
+        <div class="progress-seg" id="seg3"></div>
+        <div class="progress-seg" id="seg4"></div>
+      </div>
+      <button class="skip-btn" id="skipBtn">Omitir</button>
+    </div>
+
+    <!-- WORKSPACE VIEW (Fases 1-4) -->
+    <div id="workspaceView" style="display:flex;flex-direction:column;height:100%;">
+      <div class="topbar">
+        <span>Nueva página / Privada</span>
+        <button class="share-btn">Compartir</button>
+      </div>
+      <div class="cover-area" id="coverArea">
+        <button class="add-cover-btn" id="addCoverBtn">+ Agregar portada</button>
+      </div>
+      <div class="doc-canvas" id="docCanvas">
+        <div class="h1-block" id="h1Block" contenteditable="true">Bienvenido a Notion</div>
+        <div class="title-block hidden" id="titleBlock" contenteditable="false" data-placeholder="Nueva página"></div>
+        <div id="blocksContainer"></div>
+        <div class="slash-hint hidden" id="slashHint1">Escribe / para mostrar los comandos</div>
+        <div class="quick-actions hidden" id="quickActions">
+          <div class="qa-btn">✨ Preguntar a la IA</div>
+          <div class="qa-btn">📝 Anotador con IA</div>
+          <div class="qa-btn">📅 Base de datos</div>
+          <div class="qa-btn">📋 Formulario</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE VIEW (Fase 3: Base de Datos) -->
+    <div class="table-view" id="tableView">
+      <div class="db-title" id="dbTitle" contenteditable="false"></div>
+      <table class="full-table" id="fullTable">
+        <tr>
+          <th id="colNameHeader" contenteditable="false" data-ph="Nombre">Nombre</th>
+          <th>Propiedad</th>
+        </tr>
+        <tr>
+          <td id="cell1" contenteditable="false" data-ph="Escribe aquí..."></td>
+          <td contenteditable="false" data-ph="Valor"></td>
+        </tr>
+      </table>
+      <button class="back-to-page" id="backToPageBtn">Volver a nuestra página</button>
+    </div>
+
+    <!-- MARKETPLACE VIEW (Fase 6) -->
+    <div class="mkt-view" id="mktView">
+      <div class="mkt-header">
+        <div class="crumbs">Notion Marketplace / 📁 Plantillas</div>
+        <div class="mkt-search">
+          <input placeholder="🔍 Buscar plantillas...">
+        </div>
+        <div class="cat-pills">
+          <div class="cat-pill active" data-seg="all">Todos</div>
+          <div class="cat-pill" data-seg="work">Trabajo</div>
+          <div class="cat-pill" data-seg="personal">Personal</div>
+          <div class="cat-pill" data-seg="student">Educación</div>
+        </div>
+      </div>
+      <div class="mkt-body">
+        <h2>Optimiza tu forma de trabajar</h2>
+        <div class="sub" id="segmentSub">Plantillas recomendadas para ti</div>
+        <div class="template-grid" id="templateGrid"></div>
+      </div>
+    </div>
+
+    <!-- DETAIL VIEW (Template Detail) -->
+    <div class="detail-view" id="detailView">
+      <div class="detail-left" style="width:30%;">
+        <span class="back-link" id="backToMktFromDetail">← Volver al Marketplace</span>
+        <div class="detail-creator" style="margin-top:20px;" id="detailCreator"></div>
+        <h1 id="detailTitleLeft"></h1>
+        <p class="desc" id="detailDescLeft"></p>
+        <div class="detail-btn-row">
+          <button class="add-btn" id="addTemplateBtn">+ Agregar</button>
+          <button class="preview-btn" id="previewTemplateBtn">Vista previa</button>
+        </div>
+      </div>
+      <div class="detail-right" style="flex:1;">
+        <div class="mini-frame" id="miniFrame"></div>
+      </div>
+    </div>
+
+    <!-- FULL PREVIEW VIEW -->
+    <div class="fullpreview-view" id="fullPreviewView">
+      <div class="fp-topbar">
+        <span class="back-link" id="backFromPreview">← Volver al detalle</span>
+      </div>
+      <div id="fullPreviewContent" style="overflow-y:auto;flex:1;"></div>
+    </div>
+
+    <!-- TOAST Notification -->
+    <div class="toast" id="toast">
+      <span class="check-ic">✔</span>
+      <span id="toastText"></span>
+      <button class="view-link" id="toastViewBtn">Ver ahora</button>
+    </div>
+
+  </div><!-- /main-panel -->
+
+</div><!-- /app -->
+
+<script src="main.js"></script>
+</body>
+</html>
