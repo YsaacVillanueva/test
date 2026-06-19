@@ -75,7 +75,7 @@ html,body{margin:0;padding:0;height:100%;font-family:Inter,system-ui,-apple-syst
 .db-inline th{background:var(--sidebar);text-align:left;padding:8px;font-weight:600;border-bottom:1px solid var(--border);}
 .db-inline td{padding:8px;border-bottom:1px solid var(--border);}
 
-.drag-handle{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;color:var(--text-muted);cursor:grab;margin-right:6px;border-radius:3px;font-size:16px;flex-shrink:0;user-select:none;}
+.drag-handle{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;color:var(--text-muted);cursor:grab;margin-right:6px;border-radius:3px;font-size:16px;flex-shrink:0;user-select:none;touch-action:none;}
 .drag-handle:hover{background:var(--hover);}
 .drag-handle:active{cursor:grabbing;}
 /* FIX: block-row necesita padding para que el área de drop sea amplia y clickeable */
